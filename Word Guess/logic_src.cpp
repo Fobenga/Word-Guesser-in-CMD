@@ -37,20 +37,27 @@ int Logic::score_match(const std::string & word1, const std::string & word2, int
 	const auto buckets1 = filler(word1);
 	const auto buckets2 = filler(word2);
 
+	std::string up_guess = word1;
+	std::transform(up_guess.begin(), up_guess.end(), up_guess.begin(), ::toupper);
+
 	int score = 0;
 	for (int i = 0; i < 26; i++)
 	{
 		score += std::min(buckets1[i], buckets2[i]);
 	}
+	std::cout << "\n" << up_guess << ": \nA total of " << score << " correct letter(s)       [ + " << score << " ]\n";
+
 	for (int i = 0; i < w_size; i++)
 	{
 		if (word1[i] == word2[i])
 		{
-			std::cout << "Letter \"" << word1[i] << "\" is at the right position!" << std::endl;
+			std::cout << 
+				"Letter \"" << word1[i] << "\" is at the right position! [ + 1 ]" << std::endl;
 			score++;
 		}
 	}
 
+	std::cout << "Total score: " << score << " out of " << w_size * 2 << std::endl;
 	return score;
 }
 
@@ -88,6 +95,7 @@ void Logic::Generate(int w_size, int game_diff)
 	int guess_total = 0;
 	while (true)
 	{
+		int calc_w_size = w_size * 2;
 		std::cout << "Guess a " << w_size << " letters word [ " << guess_total << " / " << life_amount << " ]: ";
 		std::string guess;
 		std::getline(std::cin, guess);
@@ -117,6 +125,7 @@ void Logic::Generate(int w_size, int game_diff)
 					else
 					{
 						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n" << std::endl;
+						std::cout << "ans " << target << std::endl;
 						guess_total++;
 						continue;
 					}
@@ -130,28 +139,25 @@ void Logic::Generate(int w_size, int game_diff)
 				}
 
 				const int score = score_match(guess, target, w_size);
-				if (score == w_size)
+				if (score == calc_w_size)
 				{
 					system("cls");
 					std::cout << "You did it! \"" << guess << "\" is the correct word!\n" << std::endl;
-					break;
+					system("pause");
+					exit(0);
 				}
 				else
 				{
 					std::wcout << std::endl;
-					if (score < w_size && score > 1)
+					if (score < calc_w_size && score > 1)
 					{
-						std::cout << "Wrong! But there is " << score << " correct letters in \"" << guess << "\", keep trying!\n" << std::endl;
+						std::cout << "You are close! Try again." << std::endl;
 						guess_total++;
 					}
-					else if (score == 1)
-					{
-						std::cout << "Wrong! But there is " << score << " correct letter in \"" << guess << "\", keep trying!\n" << std::endl;
-						guess_total++;
-					}
-					else
+					else if (score < 1)
 					{
 						std::cout << "Wrong! There is no correct letters in \"" << guess << "\", try again.\n" << std::endl;
+						std::cout << "Current score: " << score;
 						guess_total++;
 					}
 

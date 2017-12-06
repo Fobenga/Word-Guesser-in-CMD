@@ -4,9 +4,9 @@
 #include <fstream>
 #include <string>
 #include <random>
-#include <algorithm>
 #include <cctype>
 #include <conio.h>
+#include <algorithm>
 
 class Logic
 {
