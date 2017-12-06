@@ -1,34 +1,13 @@
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <random>
-#include <algorithm>
-#include <cctype>
-#include <conio.h>
+#include "logic_src.h"
 
-std::vector<std::string> words;
-int word_size_config = 0;
-int game_diff = 0;
-int main();
-enum difficulty { EASY, MEDIUM, HARD, LUCKY };
-
-
-bool vector_contains_word(const std::vector<std::string>& vec, const std::string& word)
+bool Logic::vec_contain_word(const std::vector<std::string>& vec, const std::string & word)
 {
-	for (const auto& w : vec)
-	{
-		if (w == word)
-		{
-			return true;
-		}
-	}
 	return false;
 }
 
-std::vector<int> bucket_filler(const std::string& word)
+std::vector<int> Logic::filler(const std::string & word)
 {
-	std::vector<int> buckets(26, 0);
+	std::vector<int> fill(26, 0);
 	for (char c : word)
 	{
 		/*
@@ -41,15 +20,15 @@ std::vector<int> bucket_filler(const std::string& word)
 		and so on between every value of the vector.
 		*/
 
-		buckets[c - 'a']++;
+		fill[c - 'a']++;
 	}
-	return buckets;
+	return fill;
 }
 
-int score_match(const std::string& word1, const std::string& word2, int w_size)
+int Logic::score_match(const std::string & word1, const std::string & word2, int w_size)
 {
-	const auto buckets1 = bucket_filler(word1);
-	const auto buckets2 = bucket_filler(word2);
+	const auto buckets1 = filler(word1);
+	const auto buckets2 = filler(word2);
 
 	int score = 0;
 	for (int i = 0; i < 26; i++)
@@ -67,7 +46,7 @@ int score_match(const std::string& word1, const std::string& word2, int w_size)
 	return score;
 }
 
-void Generate(int w_size, int game_diff)
+void Logic::Generate(int w_size, int game_diff)
 {
 	/*
 	Line 1 - Creates a random number generator
@@ -118,7 +97,7 @@ void Generate(int w_size, int game_diff)
 					}
 				}
 
-				if (!vector_contains_word(words, guess))
+				if (!vec_contain_word(words, guess))
 				{
 					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n" << std::endl;
 					guess_total++;
@@ -161,7 +140,7 @@ void Generate(int w_size, int game_diff)
 			std::cout << "\n\nPress any key to restart the game." << std::endl;
 			std::cin.get();
 			system("cls");
-			main();
+			// main();
 		}
 
 		std::cin.clear();
@@ -170,7 +149,7 @@ void Generate(int w_size, int game_diff)
 	}
 }
 
-int amount_verifier()
+int Logic::amount_verifier()
 {
 	std::cout << "Amount of characters in a word (3 to 16): ";
 	std::cin >> word_size_config;
@@ -232,7 +211,7 @@ int amount_verifier()
 	return word_size_config;
 }
 
-int difficulty()
+int Logic::difficulty()
 {
 	system("cls");
 	std::cout << "Select the game difficulty. "
@@ -256,7 +235,7 @@ int difficulty()
 	}
 }
 
-void init()
+void Logic::init()
 {
 	system("color f");
 	std::ifstream words_data("common_words_data.txt");
@@ -296,12 +275,4 @@ void init()
 	// }
 
 	std::cout << std::endl;
-}
-
-int main()
-{
-	init();
-
-	system("pause");
-	return 0;
 }
