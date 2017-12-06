@@ -2,6 +2,13 @@
 
 bool Logic::vec_contain_word(const std::vector<std::string>& vec, const std::string & word)
 {
+	for (const auto& w : vec)
+	{
+		if (w == word)
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
