@@ -28,9 +28,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="5_letter_words.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="common_words_data.txt">
       <Filter>Resource Files</Filter>
     </Text>

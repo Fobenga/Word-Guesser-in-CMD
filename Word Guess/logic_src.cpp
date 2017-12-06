@@ -125,7 +125,6 @@ void Logic::Generate(int w_size, int game_diff)
 					else
 					{
 						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n" << std::endl;
-						std::cout << "ans " << target << std::endl;
 						guess_total++;
 						continue;
 					}
