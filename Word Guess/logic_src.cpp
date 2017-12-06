@@ -54,7 +54,6 @@ void Logic::Generate(int w_size, int game_diff)
 	Line 3 - Randomize a word to be guessed by the user.
 	*/
 
-
 	std::mt19937 rng(std::random_device{}());
 	std::uniform_int_distribution<int> dist(0, words.size() - 1);
 	std::string target = words[dist(rng)];
@@ -68,7 +67,6 @@ void Logic::Generate(int w_size, int game_diff)
 
 		if (guess_total != game_diff)
 		{
-
 			for (auto& c : guess)
 			{
 				c = std::tolower(c);
@@ -78,7 +76,7 @@ void Logic::Generate(int w_size, int game_diff)
 			{
 				system("cls");
 				word_size_config = 0;
-				main();
+				init();
 			}
 			else
 			{
@@ -140,7 +138,7 @@ void Logic::Generate(int w_size, int game_diff)
 			std::cout << "\n\nPress any key to restart the game." << std::endl;
 			std::cin.get();
 			system("cls");
-			// main();
+			init();
 		}
 
 		std::cin.clear();
@@ -228,6 +226,7 @@ int Logic::difficulty()
 		system("pause");
 		system("cls");
 		difficulty();
+		return 0;
 	}
 	else
 	{
