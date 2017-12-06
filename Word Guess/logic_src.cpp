@@ -46,6 +46,7 @@ int Logic::score_match(const std::string & word1, const std::string & word2, int
 	{
 		if (word1[i] == word2[i])
 		{
+			std::cout << "Letter \"" << word1[i] << "\" is at the right position!" << std::endl;
 			score++;
 		}
 	}
@@ -65,14 +66,33 @@ void Logic::Generate(int w_size, int game_diff)
 	std::uniform_int_distribution<int> dist(0, words.size() - 1);
 	std::string target = words[dist(rng)];
 
+	int life_amount;
+	switch (game_diff)
+	{
+	case EASY:
+		life_amount = 50;
+		break;
+	case NORMAL:
+		life_amount = 30;
+		break;
+	case HARD:
+		life_amount = 20;
+		break;
+	case LUCKY:
+		life_amount = 10;
+		break;
+	default:
+		break;
+	}
+
 	int guess_total = 0;
 	while (true)
 	{
-		std::cout << "Guess a " << w_size << " letters word [ " << guess_total << " / " << game_diff << " ]: ";
+		std::cout << "Guess a " << w_size << " letters word [ " << guess_total << " / " << life_amount << " ]: ";
 		std::string guess;
 		std::getline(std::cin, guess);
 
-		if (guess_total != game_diff)
+		if (guess_total != life_amount)
 		{
 			for (auto& c : guess)
 			{
@@ -112,12 +132,13 @@ void Logic::Generate(int w_size, int game_diff)
 				const int score = score_match(guess, target, w_size);
 				if (score == w_size)
 				{
+					system("cls");
 					std::cout << "You did it! \"" << guess << "\" is the correct word!\n" << std::endl;
 					break;
 				}
 				else
 				{
-
+					std::wcout << std::endl;
 					if (score < w_size && score > 1)
 					{
 						std::cout << "Wrong! But there is " << score << " correct letters in \"" << guess << "\", keep trying!\n" << std::endl;
@@ -142,7 +163,9 @@ void Logic::Generate(int w_size, int game_diff)
 		{
 			system("cls");
 			std::cout << "Game Over!" << std::endl;
-			std::cout << "\n\nPress any key to restart the game." << std::endl;
+			std::cout << "The correct word was \"" << target << "\", good luck next time :(" << std::endl;
+
+			std::cout << "\n\nPress enter to restart the game." << std::endl;
 			std::cin.get();
 			system("cls");
 			init();
@@ -160,6 +183,7 @@ int Logic::amount_verifier()
 	std::cin >> word_size_config;
 
 	// Amount that does not belong to the limits.
+
 	if (word_size_config < 3)
 	{
 		std::cout << "This amount of characters is too low, please set another." << std::endl;
@@ -193,6 +217,12 @@ int Logic::amount_verifier()
 			word_size_config = 0;
 			amount_verifier();
 		}
+		else
+		{
+			std::wcout << "\nI will accept this as a yes..." << std::endl;
+			system("pause");
+			return word_size_config;
+		}
 	}
 
 	// Long word warning
@@ -220,13 +250,12 @@ int Logic::difficulty()
 {
 	system("cls");
 	std::cout << "Select the game difficulty. "
-		"\n(1) > Easy   [50 lifes]"
-		"\n(2) > Normal [25 lifes]"
-		"\n(3) > Hard   [10 lifes]"
-		"\n(4) > Lucky  [5  lifes]"
+		"\n(1) > Easy   [60 lifes]"
+		"\n(2) > Normal [30 lifes]"
+		"\n(3) > Hard   [20 lifes]"
+		"\n(4) > Lucky  [10 lifes]"
 		"\n-> ";
 	char diff = _getch();
-
 	if (diff < '1' || diff > '4')
 	{
 		std::cout << "Please select a valid difficulty. " << std::endl;
@@ -237,6 +266,27 @@ int Logic::difficulty()
 	}
 	else
 	{
+		switch (diff)
+		{
+		case '1':
+			std::wcout << "Easy";
+			diff = EASY;
+			break;
+		case '2':
+			std::wcout << "Normal";
+			diff = NORMAL;
+			break;
+		case '3':
+			std::wcout << "Hard";
+			diff = HARD;
+			break;
+		case '4':
+			std::wcout << "Lucky";
+			diff = LUCKY;
+			break;
+		default:
+			break;
+		}
 		return diff;
 	}
 }

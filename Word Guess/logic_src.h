@@ -14,7 +14,7 @@ private:
 	std::vector<std::string> words;
 	int word_size_config = 0;
 	int game_diff = 0;
-	enum difficulty { EASY, MEDIUM, HARD, LUCKY };
+	enum difficulty { EASY, NORMAL, HARD, LUCKY };
 
 private:
 	std::vector<int> filler(const std::string& word);
