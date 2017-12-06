@@ -45,7 +45,8 @@ int Logic::score_match(const std::string & word1, const std::string & word2, int
 	{
 		score += std::min(buckets1[i], buckets2[i]);
 	}
-	std::cout << "\n" << up_guess << ": \nA total of " << score << " correct letter(s)       [ + " << score << " ]\n";
+	std::cout << "---------------------------" << std::endl;
+	std::cout << up_guess << ": \nA total of " << score << " correct letter(s)       [ + " << score << " ]\n";
 
 	for (int i = 0; i < w_size; i++)
 	{
@@ -100,6 +101,15 @@ void Logic::Generate(int w_size, int game_diff)
 		std::string guess;
 		std::getline(std::cin, guess);
 
+		if (guess_total == life_amount * 0.8)
+		{
+			system("color e");
+		}
+		else if (guess_total == life_amount - 1)
+		{
+			system("color c");
+		}
+
 		if (guess_total != life_amount)
 		{
 			for (auto& c : guess)
@@ -124,7 +134,9 @@ void Logic::Generate(int w_size, int game_diff)
 					}
 					else
 					{
+						std::cout << "---------------------------" << std::endl;
 						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n" << std::endl;
+						std::cout << "---------------------------" << std::endl;
 						guess_total++;
 						continue;
 					}
@@ -132,7 +144,9 @@ void Logic::Generate(int w_size, int game_diff)
 
 				if (!vec_contain_word(words, guess))
 				{
+					std::cout << "---------------------------" << std::endl;
 					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n" << std::endl;
+					std::cout << "---------------------------" << std::endl;
 					guess_total++;
 					continue;
 				}
@@ -141,6 +155,7 @@ void Logic::Generate(int w_size, int game_diff)
 				if (score == calc_w_size)
 				{
 					system("cls");
+					system("color f");
 					std::cout << "You did it! \"" << guess << "\" is the correct word!\n" << std::endl;
 					system("pause");
 					exit(0);
@@ -151,15 +166,16 @@ void Logic::Generate(int w_size, int game_diff)
 					if (score < calc_w_size && score > 1)
 					{
 						std::cout << "You are close! Try again." << std::endl;
+						std::cout << "---------------------------" << std::endl;
+
 						guess_total++;
 					}
 					else if (score < 1)
 					{
-						std::cout << "Wrong! There is no correct letters in \"" << guess << "\", try again.\n" << std::endl;
-						std::cout << "Current score: " << score;
+						std::cout << "Wrong! There is no correct letters in \"" << guess << "\", try again." << std::endl;
+						std::cout << "---------------------------" << std::endl;
 						guess_total++;
 					}
-
 					continue;
 				}
 			}
@@ -167,6 +183,7 @@ void Logic::Generate(int w_size, int game_diff)
 		else
 		{
 			system("cls");
+			system("color f");
 			std::cout << "Game Over!" << std::endl;
 			std::cout << "The correct word was \"" << target << "\", good luck next time :(" << std::endl;
 
