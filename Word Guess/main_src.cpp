@@ -4,8 +4,8 @@
 int main()
 {
 	Logic logic;
-
 	logic.init();
+
 	system("pause");
 	return 0;
 

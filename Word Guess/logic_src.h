@@ -17,6 +17,7 @@ private:
 	enum difficulty { EASY, NORMAL, HARD, LUCKY };
 
 private:
+	std::vector<int> history(std::string& word, int score); // TODO
 	std::vector<int> filler(const std::string& word);
 	void Generate(int w_size, int game_diff);
 	bool vec_contain_word(const std::vector<std::string>& vec, const std::string& word);

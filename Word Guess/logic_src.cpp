@@ -45,20 +45,28 @@ int Logic::score_match(const std::string & word1, const std::string & word2, int
 	{
 		score += std::min(buckets1[i], buckets2[i]);
 	}
-	std::cout << "---------------------------" << std::endl;
-	std::cout << up_guess << ": \nA total of " << score << " correct letter(s)       [ + " << score << " ]\n";
+	
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << up_guess << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "A total of " << score << " correct letter(s)       [ + " << score << " ]\n";
 
 	for (int i = 0; i < w_size; i++)
 	{
 		if (word1[i] == word2[i])
 		{
-			std::cout << 
-				"Letter \"" << word1[i] << "\" is at the right position! [ + 1 ]" << std::endl;
+			std::cout << "Letter \"" << word1[i] << "\" is at the right position! [ + 1 ]" << std::endl;
 			score++;
 		}
 	}
 
 	std::cout << "Total score: " << score << " out of " << w_size * 2 << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+
+	// Push back the current word and score to a vector, and print the history everytime.
+
+
+
 	return score;
 }
 
@@ -97,15 +105,12 @@ void Logic::Generate(int w_size, int game_diff)
 	while (true)
 	{
 		int calc_w_size = w_size * 2;
-		std::cout << "Guess a " << w_size << " letters word [ " << guess_total << " / " << life_amount << " ]: ";
+		std::cout << "Guess a " << w_size << " letters word [ " << guess_total + 1 << " / " << life_amount << " ]: ";
 		std::string guess;
 		std::getline(std::cin, guess);
+		system("cls");
 
-		if (guess_total == life_amount * 0.8)
-		{
-			system("color e");
-		}
-		else if (guess_total == life_amount - 1)
+		if (guess_total == life_amount - 2)
 		{
 			system("color c");
 		}
@@ -129,14 +134,15 @@ void Logic::Generate(int w_size, int game_diff)
 				{
 					if (guess == "")
 					{
-						system("cls");
 						continue;
 					}
 					else
 					{
-						std::cout << "---------------------------" << std::endl;
-						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n" << std::endl;
-						std::cout << "---------------------------" << std::endl;
+						std::cout << "\n-----------------------------------------------" << std::endl;
+						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n";
+						std::cout << "ans: " << target << std::endl;
+						std::cout << "-----------------------------------------------\n" << std::endl;
+
 						guess_total++;
 						continue;
 					}
@@ -144,9 +150,9 @@ void Logic::Generate(int w_size, int game_diff)
 
 				if (!vec_contain_word(words, guess))
 				{
-					std::cout << "---------------------------" << std::endl;
-					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n" << std::endl;
-					std::cout << "---------------------------" << std::endl;
+					std::cout << "\n-----------------------------------------------" << std::endl;
+					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n";
+					std::cout << "-----------------------------------------------\n" << std::endl;
 					guess_total++;
 					continue;
 				}
@@ -162,18 +168,17 @@ void Logic::Generate(int w_size, int game_diff)
 				}
 				else
 				{
-					std::wcout << std::endl;
 					if (score < calc_w_size && score > 1)
 					{
-						std::cout << "You are close! Try again." << std::endl;
-						std::cout << "---------------------------" << std::endl;
+						std::cout << "You are close! Try again.\n";
+						std::cout << "-----------------------------------------------\n" << std::endl;
 
 						guess_total++;
 					}
 					else if (score < 1)
 					{
-						std::cout << "Wrong! There is no correct letters in \"" << guess << "\", try again." << std::endl;
-						std::cout << "---------------------------" << std::endl;
+						std::cout << "There is no correct letters in \"" << guess << "\", try again." << std::endl;
+						std::cout << "-----------------------------------------------" << std::endl;
 						guess_total++;
 					}
 					continue;
@@ -226,7 +231,7 @@ int Logic::amount_verifier()
 	// Small word warning
 	if (word_size_config >= 3 && word_size_config < 5)
 	{
-		std::cout << "Note that small words sometimes can be as hard as long words to guess, they sometimes looks random..."
+		std::cout << "Note that small words sometimes can be as hard as long words to guess, they may look random..."
 			"\n(Y to proceed | N to change): ";
 		char select = _getch();
 		if (select == 'Y' || select == 'y')
@@ -241,7 +246,7 @@ int Logic::amount_verifier()
 		}
 		else
 		{
-			std::wcout << "\nI will accept this as a yes..." << std::endl;
+			std::cout << "\nI will accept this as a yes..." << std::endl;
 			system("pause");
 			return word_size_config;
 		}
@@ -291,19 +296,19 @@ int Logic::difficulty()
 		switch (diff)
 		{
 		case '1':
-			std::wcout << "Easy";
+			std::cout << "Easy";
 			diff = EASY;
 			break;
 		case '2':
-			std::wcout << "Normal";
+			std::cout << "Normal";
 			diff = NORMAL;
 			break;
 		case '3':
-			std::wcout << "Hard";
+			std::cout << "Hard";
 			diff = HARD;
 			break;
 		case '4':
-			std::wcout << "Lucky";
+			std::cout << "Lucky";
 			diff = LUCKY;
 			break;
 		default:
