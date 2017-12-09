@@ -1,212 +1,9 @@
 #include "logic_src.h"
 
-bool Logic::vec_contain_word(const std::vector<std::string>& vec, const std::string & word)
-{
-	for (const auto& w : vec)
-	{
-		if (w == word)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-std::vector<int> Logic::filler(const std::string & word)
-{
-	std::vector<int> fill(26, 0);
-	for (char c : word)
-	{
-		/*
-		Get a character between A to Z and put a index in it.
-
-		Works like this:
-		If letter A is found = c becames the inputted 'a' and get in buckets['a' - 'a'] = 0
-		If letter B is found = c becames the inputted 'b' and get in buckets['b' - 'a'] = 1
-		If letter C is found = c becames the inputted 'c' and get in buckets['c' - 'a'] = 2
-		and so on between every value of the vector.
-		*/
-
-		fill[c - 'a']++;
-	}
-	return fill;
-}
-
-int Logic::score_match(const std::string & word1, const std::string & word2, int w_size)
-{
-	const auto buckets1 = filler(word1);
-	const auto buckets2 = filler(word2);
-
-	std::string up_guess = word1;
-	std::transform(up_guess.begin(), up_guess.end(), up_guess.begin(), ::toupper);
-
-	int score = 0;
-	for (int i = 0; i < 26; i++)
-	{
-		score += std::min(buckets1[i], buckets2[i]);
-	}
-	
-	std::cout << "-----------------------------------------------" << std::endl;
-	std::cout << up_guess << std::endl;
-	std::cout << "-----------------------------------------------" << std::endl;
-	std::cout << "A total of " << score << " correct letter(s)       [ + " << score << " ]\n";
-
-	for (int i = 0; i < w_size; i++)
-	{
-		if (word1[i] == word2[i])
-		{
-			std::cout << "Letter \"" << word1[i] << "\" is at the right position! [ + 1 ]" << std::endl;
-			score++;
-		}
-	}
-
-	std::cout << "Total score: " << score << " out of " << w_size * 2 << std::endl;
-	std::cout << "-----------------------------------------------" << std::endl;
-
-	// Push back the current word and score to a vector, and print the history everytime.
-
-
-
-	return score;
-}
-
-void Logic::Generate(int w_size, int game_diff)
-{
-	/*
-	Line 1 - Creates a random number generator
-	Line 2 - Set the limits of the generator
-	Line 3 - Randomize a word to be guessed by the user.
-	*/
-
-	std::mt19937 rng(std::random_device{}());
-	std::uniform_int_distribution<int> dist(0, words.size() - 1);
-	std::string target = words[dist(rng)];
-
-	int life_amount;
-	switch (game_diff)
-	{
-	case EASY:
-		life_amount = 50;
-		break;
-	case NORMAL:
-		life_amount = 30;
-		break;
-	case HARD:
-		life_amount = 20;
-		break;
-	case LUCKY:
-		life_amount = 10;
-		break;
-	default:
-		break;
-	}
-
-	int guess_total = 0;
-	while (true)
-	{
-		int calc_w_size = w_size * 2;
-		std::cout << "Guess a " << w_size << " letters word [ " << guess_total + 1 << " / " << life_amount << " ]: ";
-		std::string guess;
-		std::getline(std::cin, guess);
-		system("cls");
-
-		if (guess_total == life_amount - 2)
-		{
-			system("color c");
-		}
-
-		if (guess_total != life_amount)
-		{
-			for (auto& c : guess)
-			{
-				c = std::tolower(c);
-			}
-
-			if (guess == "restart")
-			{
-				system("cls");
-				word_size_config = 0;
-				init();
-			}
-			else
-			{
-				if (guess.size() != w_size)
-				{
-					if (guess == "")
-					{
-						continue;
-					}
-					else
-					{
-						std::cout << "\n-----------------------------------------------" << std::endl;
-						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n";
-						std::cout << "ans: " << target << std::endl;
-						std::cout << "-----------------------------------------------\n" << std::endl;
-
-						guess_total++;
-						continue;
-					}
-				}
-
-				if (!vec_contain_word(words, guess))
-				{
-					std::cout << "\n-----------------------------------------------" << std::endl;
-					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n";
-					std::cout << "-----------------------------------------------\n" << std::endl;
-					guess_total++;
-					continue;
-				}
-
-				const int score = score_match(guess, target, w_size);
-				if (score == calc_w_size)
-				{
-					system("cls");
-					system("color f");
-					std::cout << "You did it! \"" << guess << "\" is the correct word!\n" << std::endl;
-					system("pause");
-					exit(0);
-				}
-				else
-				{
-					if (score < calc_w_size && score > 1)
-					{
-						std::cout << "You are close! Try again.\n";
-						std::cout << "-----------------------------------------------\n" << std::endl;
-
-						guess_total++;
-					}
-					else if (score < 1)
-					{
-						std::cout << "There is no correct letters in \"" << guess << "\", try again." << std::endl;
-						std::cout << "-----------------------------------------------" << std::endl;
-						guess_total++;
-					}
-					continue;
-				}
-			}
-		}
-		else
-		{
-			system("cls");
-			system("color f");
-			std::cout << "Game Over!" << std::endl;
-			std::cout << "The correct word was \"" << target << "\", good luck next time :(" << std::endl;
-
-			std::cout << "\n\nPress enter to restart the game." << std::endl;
-			std::cin.get();
-			system("cls");
-			init();
-		}
-
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cin.get();
-	}
-}
-
 int Logic::amount_verifier()
 {
 	std::cout << "Amount of characters in a word (3 to 16): ";
+	word_size_config = 0;
 	std::cin >> word_size_config;
 
 	// Amount that does not belong to the limits.
@@ -318,6 +115,227 @@ int Logic::difficulty()
 	}
 }
 
+bool Logic::vec_contain_word(const std::vector<std::string>& vec, const std::string & word)
+{
+	for (const auto& w : vec)
+	{
+		if (w == word)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+std::vector<int> Logic::filler(const std::string & word)
+{
+	std::vector<int> fill(26, 0);
+	for (char c : word)
+	{
+		/*
+		Get a character between A to Z and put a index in it.
+
+		Works like this:
+		If letter A is found = c becames the inputted 'a' and get in buckets['a' - 'a'] = 0
+		If letter B is found = c becames the inputted 'b' and get in buckets['b' - 'a'] = 1
+		If letter C is found = c becames the inputted 'c' and get in buckets['c' - 'a'] = 2
+		and so on between every value of the vector.
+		*/
+
+		fill[c - 'a']++;
+	}
+	return fill;
+}
+
+int Logic::score_match(const std::string & word1, const std::string & word2, int w_size)
+{
+	const auto buckets1 = filler(word1);
+	const auto buckets2 = filler(word2);
+
+	std::string up_guess = word1;
+	std::transform(up_guess.begin(), up_guess.end(), up_guess.begin(), ::toupper);
+
+	int score = 0;
+	for (int i = 0; i < 26; i++)
+	{
+		score += std::min(buckets1[i], buckets2[i]);
+	}
+
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << up_guess << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "A total of " << score << " correct letter(s)       [ + " << score << " ]\n";
+
+	for (int i = 0; i < w_size; i++)
+	{
+		if (word1[i] == word2[i])
+		{
+			std::cout << "Letter \"" << word1[i] << "\" is at the right position! [ + 1 ]" << std::endl;
+			score++;
+		}
+	}
+
+	std::cout << "Total score: " << score << " out of " << w_size * 2 << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+
+	// Push back the current word and score to a vector, and print the history everytime.
+	return score;
+}
+
+void Logic::Generate(int w_size, int game_diff)
+{
+
+	// This is not working properly when the game is restarted :(
+	std::mt19937 rng(std::random_device{}());
+	std::uniform_int_distribution<size_t> dist(0, words.size() - 1);
+	std::string target = words[dist(rng)];
+
+	if (target == "quit")
+	{
+		system("cls");
+		std::cout << "A error occurred loading the game, please restart the game." << std::endl;
+		system("pause");
+		exit(0);
+	}
+
+	int life_amount;
+	switch (game_diff)
+	{
+	case EASY:
+		life_amount = 50;
+		break;
+	case NORMAL:
+		life_amount = 30;
+		break;
+	case HARD:
+		life_amount = 20;
+		break;
+	case LUCKY:
+		life_amount = 10;
+		break;
+	default:
+		break;
+	}
+
+	int guess_total = 0;
+
+	// Game Loop
+	while (true)
+	{
+		int calc_w_size = w_size * 2;
+		std::cout << "Guess a " << w_size << " letters word [ " << guess_total + 1 << " / " << life_amount << " ]: ";
+		std::string guess;
+		std::getline(std::cin, guess);
+		system("cls");
+
+		if (guess_total == life_amount - 2)
+		{
+			system("color c");
+		}
+
+		if (guess_total != life_amount - 1)
+		{
+			for (auto& c : guess)
+			{
+				c = std::tolower(c);
+			}
+
+			if (guess == "quit")
+			{
+				system("cls");
+				std::string leave = "Leaving";
+				std::string dots = " . . .";
+				for (auto i = 0; i < leave.length(); i++)
+				{
+					std::cout << leave[i];
+					Sleep(50);
+				}
+
+				for (auto i = 0; i < dots.length(); i++)
+				{
+					std::cout << dots[i];
+					Sleep(150);
+				}
+
+				exit(0);
+			}
+			else
+			{
+				if (guess.size() != w_size)
+				{
+					if (guess == "")
+					{
+						// Empty guess used for cleaning the screen.
+						continue;
+					}
+					else
+					{
+						std::cout << "-----------------------------------------------" << std::endl;
+						std::cout << "\"" << guess << "\" does not have " << w_size << " letters.\n";
+						std::cout << "ans: " << target << std::endl; // debug only 
+						std::cout << "-----------------------------------------------\n" << std::endl;
+						guess_total++;
+						continue;
+					}
+				}
+
+				if (!vec_contain_word(words, guess))
+				{
+					std::cout << "\n-----------------------------------------------" << std::endl;
+					std::cout << "\"" << guess << "\" does not exists in the dictionary.\n";
+					std::cout << "-----------------------------------------------\n" << std::endl;
+					guess_total++;
+					continue;
+				}
+
+				const int score = score_match(guess, target, w_size);
+				if (score == calc_w_size)
+				{
+					system("cls");
+					system("color a");
+					std::cout << "You did it! \"" << guess << "\" is the correct word!\n"
+						"\nPress enter to leave the game." << std::endl;
+					std::cin.get();
+					system("cls");
+					exit(0);
+				}
+				else
+				{
+					if (score < calc_w_size && score > 1)
+					{
+						std::cout << "You are close! Try again.\n";
+						std::cout << "-----------------------------------------------\n" << std::endl;
+						guess_total++;
+					}
+					else if (score < 1)
+					{
+						std::cout << "There is no correct letters in \"" << guess << "\", try again." << std::endl;
+						std::cout << "-----------------------------------------------" << std::endl;
+						guess_total++;
+					}
+					continue;
+				}
+			}
+		}
+		else
+		{
+			system("cls");
+			system("color f");
+			std::cout << "Game Over!" << std::endl;
+			std::cout << "The correct word was \"" << target << "\", good luck next time :(" << std::endl;
+
+			std::cout << "\n\nPress enter to leave the game." << std::endl;
+			std::cin.get();
+			system("cls");
+			exit(0);
+		}
+
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cin.get();
+	}
+}
+
 void Logic::init()
 {
 	system("color f");
@@ -326,7 +344,7 @@ void Logic::init()
 	int word_selected_size = amount_verifier();
 	int curr_dif = difficulty();
 
-	std::cout << "\nYou can restart the game writing \"restart\" at any moment." << std::endl;
+	std::cout << "\nYou can leave the game writing \"quit\" at any moment." << std::endl;
 	system("pause");
 
 	// Verify if current line matches with word size configurations.
